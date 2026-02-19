@@ -1,312 +1,84 @@
-<think>
-The user wants a simple, clean, responsive Setup and Hold Timing Calculator in a single HTML file.
-
-**Requirements:**
-1.  **Inputs:**
-    *   Clock Period
-    *   Data Delay
-    *   Setup Time
-    *   Hold Time
-2.  **Button:** "Calculate"
-3.  **Logic:**
-    *   Setup Slack = Clock Period - Data Delay - Setup Time
-    *   Hold Slack = Data Delay - Hold Time
-4.  **Display:** Clear results.
-5.  **Style:** Responsive and modern.
-6.  **Format:** Single HTML file.
-
-**Design Plan:**
-*   **Theme:** Dark mode (popular for engineering/tech tools), using a dark grey background with a vibrant accent color (like cyan or teal).
-*   **Layout:** Centered card on the screen. Flexbox for alignment.
-*   **Inputs:** Styled input fields with labels.
-*   **Results:** A section that appears or updates after calculation. Color-coded results are helpful:
-    *   Green for positive slack (Good).
-    *   Red for negative slack (Violation).
-*   **Responsive:** Use media queries or percentages to ensure it works on mobile.
-
-**Code Structure:**
-*   `<!DOCTYPE html>`
-*   `<head>`: Meta tags, title, and `<style>` block.
-*   `<body>`:
-    *   Container div.
-    *   Title/Header.
-    *   Form group for each input.
-    *   Button.
-    *   Results container (hidden initially or empty).
-*   `<script>`: Function to grab values, compute, update DOM.
-
-**Drafting the Logic:**
-```javascript
-const period = parseFloat(document.getElementById('period').value);
-const delay = parseFloat(document.getElementById('delay').value);
-const setup = parseFloat(document.getElementById('setup').value);
-const hold = parseFloat(document.getElementById('hold').value);
-
-const setupSlack = period - delay - setup;
-const holdSlack = delay - hold;
-```
-
-**Drafting the CSS:**
-*   `body`: `font-family: sans-serif; background: #f4f4f9;` (or dark mode #1a1a1a). Let's go with a clean modern dark theme as it's preferred for VLSI/tech tools.
-*   `.calculator`: White (or dark grey) card, shadow, rounded corners.
-*   `input`: Padding, border radius, focus effect.
-*   `button`: Accent color background, hover effect.
-*   `.result`: Large font, bold.
-
-Let's refine the single file implementation.
-
-**Refinement:**
-The prompt asks for specific variable names for calculation:
-- Setup Slack = Clock Period - Data Delay - Setup Time
-- Hold Slack = Data Delay - Hold Time
-
-I will add validation to ensure inputs are numbers.
-
-Let's write the code.
-</think> HTML, CSS, and JavaScript. The design features a modern "Dark Mode" aesthetic commonly used in engineering software, with color-coded results to indicate safe (green) or violating (red) timing paths.
-
-```html
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup & Hold Timing Calculator</title>
+    <title>VLSI Timing Calculator</title>
     <style>
-        /* --- CSS Styles --- */
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --input-bg: #2c2c2c;
-            --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-            --accent-color: #00d4ff; /* Cyan */
-            --success-color: #00e676; /* Green */
-            --error-color: #ff5252;   /* Red */
-            --border-radius: 8px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #1f4037, #99f2c8);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
         }
 
         .container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 400px;
+            background: white;
             padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            border: 1px solid #333;
-        }
-
-        h1 {
+            border-radius: 10px;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 5px;
-            color: var(--accent-color);
+            width: 300px;
         }
 
-        p.subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--input-bg);
-            border: 1px solid #444;
-            border-radius: var(--border-radius);
-            color: var(--text-primary);
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--accent-color);
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
         button {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--accent-color);
-            color: #000;
+            background-color: #1f4037;
+            color: white;
+            padding: 10px;
             border: none;
-            border-radius: var(--border-radius);
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: opacity 0.2s;
+            width: 100%;
         }
 
         button:hover {
-            opacity: 0.9;
+            background-color: #14532d;
         }
 
-        /* Results Section */
-        #results {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            display: none; /* Hidden by default */
-            animation: fadeIn 0.3s ease-in-out;
+        h2 {
+            margin-bottom: 15px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #252525;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            margin-bottom: 10px;
-        }
-
-        .result-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .result-value {
-            font-size: 18px;
+        #result {
+            margin-top: 15px;
             font-weight: bold;
-        }
-
-        .safe { color: var(--success-color); }
-        .violation { color: var(--error-color); }
-        
-        .note {
-            font-size: 12px;
-            color: #555;
-            margin-top: 5px;
-            font-style: italic;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Timing Calculator</h1>
-        <p class="subtitle">VLSI Setup & Hold Slack</p>
+<div class="container">
+    <h2>VLSI Timing Calculator</h2>
 
-        <!-- Input Fields -->
-        <div class="input-group">
-            <label for="clockPeriod">Clock Period (ns)</label>
-            <input type="number" id="clockPeriod" placeholder="e.g. 10.0" step="0.01">
-        </div>
+    <input type="number" id="clock" placeholder="Clock Period (ns)">
+    <input type="number" id="setup" placeholder="Setup Time (ns)">
+    <input type="number" id="delay" placeholder="Combinational Delay (ns)">
 
-        <div class="input-group">
-            <label for="dataDelay">Data Delay (ns)</label>
-            <input type="number" id="dataDelay" placeholder="e.g. 2.5" step="0.01">
-        </div>
+    <button onclick="calculateSlack()">Calculate Slack</button>
 
-        <div class="input-group">
-            <label for="setupTime">Setup Time (ns)</label>
-            <input type="number" id="setupTime" placeholder="e.g. 0.5" step="0.01">
-        </div>
+    <div id="result"></div>
+</div>
 
-        <div class="input-group">
-            <label for="holdTime">Hold Time (ns)</label>
-            <input type="number" id="holdTime" placeholder="e.g. 0.2" step="0.01">
-        </div>
+<script>
+function calculateSlack() {
+    let clock = parseFloat(document.getElementById("clock").value);
+    let setup = parseFloat(document.getElementById("setup").value);
+    let delay = parseFloat(document.getElementById("delay").value);
 
-        <button onclick="calculateTiming()">Calculate</button>
+    let slack = clock - (setup + delay);
 
-        <!-- Results Display -->
-        <div id="results">
-            <div class="result-item">
-                <span class="result-label">Setup Slack</span>
-                <span id="setupResult" class="result-value">--</span>
-            </div>
-            <div class="result-item">
-                <span class="result-label">Hold Slack</span>
-                <span id="holdResult" class="result-value">--</span>
-            </div>
-            <div class="note">Positive slack = Safe &nbsp;|&nbsp; Negative slack = Violation</div>
-        </div>
-    </div>
+    document.getElementById("result").innerHTML = 
+        "Slack = " + slack.toFixed(2) + " ns";
+}
+</script>
 
-    <script>
-        function calculateTiming() {
-            // 1. Get values from input fields
-            let period = parseFloat(document.getElementById('clockPeriod').value);
-            let delay = parseFloat(document.getElementById('dataDelay').value);
-            let setup = parseFloat(document.getElementById('setupTime').value);
-            let hold = parseFloat(document.getElementById('holdTime').value);
-
-            // 2. Validate inputs
-            if (isNaN(period) || isNaN(delay) || isNaN(setup) || isNaN(hold)) {
-                alert("Please enter valid numbers in all fields.");
-                return;
-            }
-
-            // 3. Calculate Slacks
-            // Setup Slack = Clock Period - Data Delay - Setup Time
-            let setupSlack = period - delay - setup;
-
-            // Hold Slack = Data Delay - Hold Time
-            let holdSlack = delay - hold;
-
-            // 4. Display Results
-            const resultsDiv = document.getElementById('results');
-            const setupEl = document.getElementById('setupResult');
-            const holdEl = document.getElementById('holdResult');
-
-            // Show the results container
-            resultsDiv.style.display = 'block';
-
-            // Format Setup Result
-            setupEl.innerText = setupSlack.toFixed(2) + " ns";
-            if (setupSlack >= 0) {
-                setupEl.className = "result-value safe";
-            } else {
-                setupEl.className = "result-value violation";
-            }
-
-            // Format Hold Result
-            holdEl.innerText = holdSlack.toFixed(2) + " ns";
-            if (holdSlack >= 0) {
-                holdEl.className = "result-value safe";
-            } else {
-                holdEl.className = "result-value violation";
-            }
-        }
-    </script>
 </body>
 </html>
-```
