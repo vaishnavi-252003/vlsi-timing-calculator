@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>VLSI Timing Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #1f4037, #99f2c8);
+            background-color: #121212;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -13,70 +18,105 @@
         }
 
         .container {
-            background: white;
+            background-color: #1e1e1e;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
-            text-align: center;
-            width: 300px;
-        }
-
-        input {
-            width: 90%;
-            padding: 8px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            background-color: #1f4037;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #14532d;
+            width: 350px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         h2 {
-            margin-bottom: 15px;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        #result {
-            margin-top: 15px;
-            font-weight: bold;
+        label {
+            font-size: 14px;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2c2c2c;
+            border-radius: 5px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
     <h2>VLSI Timing Calculator</h2>
 
-    <input type="number" id="clock" placeholder="Clock Period (ns)">
-    <input type="number" id="setup" placeholder="Setup Time (ns)">
-    <input type="number" id="delay" placeholder="Combinational Delay (ns)">
+    <label>Clock Period (ns)</label>
+    <input type="number" id="clock" placeholder="Enter Clock Period">
 
-    <button onclick="calculateSlack()">Calculate Slack</button>
+    <label>Data Delay (ns)</label>
+    <input type="number" id="delay" placeholder="Enter Data Delay">
 
-    <div id="result"></div>
+    <label>Setup Time (ns)</label>
+    <input type="number" id="setup" placeholder="Enter Setup Time">
+
+    <label>Hold Time (ns)</label>
+    <input type="number" id="hold" placeholder="Enter Hold Time">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="result" id="result"></div>
 </div>
 
 <script>
-function calculateSlack() {
+function calculate() {
+
     let clock = parseFloat(document.getElementById("clock").value);
-    let setup = parseFloat(document.getElementById("setup").value);
     let delay = parseFloat(document.getElementById("delay").value);
+    let setup = parseFloat(document.getElementById("setup").value);
+    let hold = parseFloat(document.getElementById("hold").value);
 
-    let slack = clock - (setup + delay);
+    if (isNaN(clock) || isNaN(delay) || isNaN(setup) || isNaN(hold)) {
+        document.getElementById("result").innerHTML =
+            "<p class='error'>Please enter all values!</p>";
+        return;
+    }
 
-    document.getElementById("result").innerHTML = 
-        "Slack = " + slack.toFixed(2) + " ns";
+    let setupSlack = clock - (delay + setup);
+    let holdSlack = delay - hold;
+
+    document.getElementById("result").innerHTML =
+        "<p><b>Setup Slack:</b> " + setupSlack.toFixed(2) + " ns</p>" +
+        "<p><b>Hold Slack:</b> " + holdSlack.toFixed(2) + " ns</p>";
 }
 </script>
 
